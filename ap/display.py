@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-centers = [62, 53, 3, 52]
+centers = [13, 78, 44, 27, 50, 11]
 
 n = 0
 x = []

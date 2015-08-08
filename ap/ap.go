@@ -15,9 +15,9 @@ type AP struct {
 }
 
 func (ap *AP) cluster(data []*Feat) []int {
-  ap.damping = 0.7
+  ap.damping = 0.9
   var n int = len(data)
-  var maxIter int = 300
+  var maxIter int = 500
 
   Init2DArray(&ap.s, n)
   Init2DArray(&ap.r, n)
@@ -31,7 +31,7 @@ func (ap *AP) cluster(data []*Feat) []int {
       ap.a[i][j] = 0.0
       ap.r[i][j] = 0.0
       if i < j {
-        ap.s[i][j] = EuclideanDist(data[i], data[j])
+        ap.s[i][j] = -EuclideanDist(data[i], data[j])
         ap.s[j][i] = ap.s[i][j]
         sim[c] = ap.s[i][j]
         c++
@@ -61,14 +61,12 @@ func (ap *AP) cluster(data []*Feat) []int {
     // Update r.
     for i := 0; i < n; i++ {
       for k := 0; k < n; k++ {
-
         maxval := math.Inf(-1)
         for j := 0; j < n; j++ {
           if j != k {
             maxval = math.Max(maxval, ap.a[i][j] + ap.s[i][j])
           }
         }
-
         nr[i][k] = ap.s[i][k] - maxval
       }
     }
@@ -102,7 +100,6 @@ func (ap *AP) cluster(data []*Feat) []int {
         ap.a[i][k] = (1.0 - ap.damping) * na[i][k] + ap.damping * ap.a[i][k]
       }
     }
-
     itr++
   }
 
